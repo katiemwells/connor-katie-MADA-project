@@ -1,7 +1,7 @@
 ---
-title: "Example Manuscript Template for a Data Analysis Project"
+title: "Manuscript for a Data Analysis Project"
 subtitle: ""
-author: Andreas Handel
+author: Katie Wells & Connor Ross
 date: "`r Sys.Date()`"
 format:
   docx:
@@ -10,6 +10,7 @@ format:
     highlight-style: github
 bibliography: ../dataanalysis_template_references.bib
 csl: ../apa.csl
+
 ---
 
 The structure below is one possible setup for a data analysis project (including the course project). For a manuscript, adjust as needed. 
@@ -22,9 +23,28 @@ This uses MS Word as output format. [See here](https://quarto.org/docs/output-fo
 # load a few R packages
 library(here)
 library(knitr)
+library(tidyverse)
 ```
 
+## Importing and viewing data
+```{r}
 
+setwd("../../")
+
+## Loading the rull-raw data set...
+Raw_USVac <- read_csv("data/raw_data/COVID-19_Vaccinations_in_the_United_States_Jurisdiction.csv")
+
+
+# Save RDS
+saveRDS(Raw_USVac, file = "data/Raw_USVac.rds")
+
+
+# Check data
+str(Raw_USVac)
+
+summary(Raw_USVac)
+
+```
 
 # Summary/Abstract
 _Write a summary of your project._
@@ -39,10 +59,12 @@ _Write a summary of your project._
 _Provide enough background on your topic that others can understand the why and how of your analysis_ 
 
 ## Description of data and data source
-_Describe what the data is, what it contains, where it is from, etc. Eventually this might be part of a methods section._
+This dataset contains US COVID-19 vaccine deliveries and administration data at national and jurisdiction level from all vaccine partners, including jurisdictional partner clinics, retail pharmacies, long-term care facilities, dialysis centers, Federal Emergency Management Agency and Health Resources and Services Administration partner sites, and federal entity facilities. It was obtained from https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-Jurisdi/unsk-b7fc. It has 109 columns and 37,500 rows of administration, distribution, and series data of COVID-19 vaccinations across the US.
 
 ## Questions/Hypotheses to be addressed
-_State the research questions you plan to answer with this analysis._
+Question: What/Which COVID-19 vaccine was most popular in each region of the United States?
+Hypotheses: H0 - There is not a difference in COVID-19 vaccine (across manufacturers) popularity across all the regions in the United States.
+HA - There is differences in COVID-19 vaccine (manufacturer) popularity across the regions in the United States.
 
 To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above (here `dataanalysis_template_references.bib`) and have the right bibtex key. Then you can include like this:
 
@@ -65,7 +87,7 @@ _Write code that reads in the file and cleans it so it's ready for analysis. Sin
 
 
 ## Statistical analysis
-_Explain anything related to your statistical analyses._
+After placing each state in a region of the US, we will conduct a time series analysis to determine the change in popularity over time. Further, we intended to plot overall administration of manufacturer-specific vaccines in each region to determine popularity after adjusting for distribution and time.
 
 
 {{< pagebreak >}}
