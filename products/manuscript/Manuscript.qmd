@@ -60,6 +60,10 @@ Question: What/Which COVID-19 vaccine was most popular in each region of the Uni
 Hypotheses: H0 - There is not a difference in COVID-19 vaccine (across manufacturers) popularity across all the regions in the United States.
 HA - There is differences in COVID-19 vaccine (manufacturer) popularity across the regions in the United States.
 
+
+
+
+
 To cite other work (important everywhere, but likely happens first in introduction), make sure your references are in the bibtex file specified in the YAML header above (here `dataanalysis_template_references.bib`) and have the right bibtex key. Then you can include like this:
 
 Examples of reproducible research projects can for instance be found in [@mckay2020; @mckay2020a]
@@ -98,13 +102,7 @@ _Use a combination of text/tables/figures to explore and describe your data. Sho
 
 Note the loading of the data providing a **relative** path using the `../../` notation. (Two dots means a folder up). You never want to specify an **absolute** path like `C:\ahandel\myproject\results\` because if you share this with someone, it won't work for them since they don't have that path. You can also use the `here` R package to create paths. See examples of that below.
 
-```{r}
-#| label: tbl-summarytable
-#| tbl-cap: "Data summary table."
-#| echo: FALSE
-resulttable=readRDS("../../results/summarytable.rds")
-knitr::kable(resulttable)
-```
+
 
 
 
@@ -115,12 +113,7 @@ _To get some further insight into your data, if reasonable you could compute sim
 
 @fig-result shows a scatterplot figure produced by one of the R scripts.
 
-```{r}
-#| label: fig-result
-#| fig-cap: "Height and weight stratified by sex."
-#| echo: FALSE
-knitr::include_graphics(here("results","height_weight_stratified.png"))
-```
+
 
 
 ## Full analysis
@@ -129,13 +122,7 @@ _Use one or several suitable statistical/machine learning methods to analyze you
 
 Example @tbl-resulttable2 shows a summary of a linear model fit.
 
-```{r}
-#| label: tbl-resulttable2
-#| tbl-cap: "Linear model fit table."
-#| echo: FALSE
-resulttable2 = readRDS(here("results","resulttable2.rds"))
-knitr::kable(resulttable2)
-```
+
 
 
 {{< pagebreak >}}
