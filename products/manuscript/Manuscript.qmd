@@ -29,14 +29,8 @@ library(tidyverse)
 ## Importing and viewing data
 ```{r}
 
-setwd("../../")
-
-## Loading the rull-raw data set...
-Raw_USVac <- read_csv("data/raw_data/COVID-19_Vaccinations_in_the_United_States_Jurisdiction.csv")
-
-
-# Save RDS
-saveRDS(Raw_USVac, file = "data/Raw_USVac.rds")
+## Loading the full-raw data set...
+Raw_USVac <- read_csv(here("data", "raw_data" , "COVID-19_Vaccinations_in_the_United_States_Jurisdiction.csv"))
 
 
 # Check data
