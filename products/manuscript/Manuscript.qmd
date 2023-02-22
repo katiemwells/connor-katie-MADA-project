@@ -40,6 +40,80 @@ summary(Raw_USVac)
 
 ```
 
+```{r}
+# Data Wrangling
+
+## Take out year 2023. Only want data from 2021 - 2022.
+
+library(lubridate)
+
+Raw_USVac$Date <- mdy(Raw_USVac$Date)
+
+
+library(tidyverse)
+SubData <- Raw_USVac %>%
+  filter(Date > '2021-02-01' & Date < '2022-12-31')
+
+library(ggplot2)
+library(dplyr)
+
+## Vacccine Distribution Overtime by Manufac. US Wide
+DisTime <- SubData %>%
+  dplyr::group_by(`Date`) %>%
+  dplyr::select(`Date`, 5:8) %>%
+  pivot_longer(!Date, names_to = "Vacc_Dist", values_to = "Count")
+
+Graph_DisTime <- DisTime %>%
+  drop_na(Count)%>%
+  ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Dist)) +
+  geom_area() +
+  ggtitle("Vaccine distribution over time")
+Graph_DisTime
+
+## Vaccine Administration Overtime by Manufac. US Wide
+AdminTime <- SubData %>%
+  dplyr::group_by(`Date`) %>%
+  dplyr::select(`Date`, 20:23) %>%
+  pivot_longer(!Date, names_to = "Vacc_Admin", values_to = "Count")
+
+Graph_AdminTime <- AdminTime %>%
+  drop_na(Count)%>%
+  ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Admin)) +
+  geom_area() +
+  ggtitle("Vaccine Administration over time")
+Graph_AdminTime
+
+SubData <- SubData %>%
+  dplyr::mutate(Region = case_when(
+    (`Location` %in% c("ME", "VT", "NH", "MA", "CT", "RI", "NY", "NJ", "PA", "DE", "MD")) ~ "NorthEast",
+    (`Location` %in% c("DC", "WV", "VA", "KY", "NC", "TN", "AR", "LA", "MS", "AL", "GA", "FL", "SC")) ~ "SouthEast",
+    (`Location` %in% c("NA", "SD", "NE", "KS", "MN", "IA", "MO", "WI", "IL", "MI", "IN", "OH")) ~ "MidWest",
+    (`Location` %in% c("OK", "TX", "NM", "AZ")) ~ "SouthWest",
+    (`Location` %in% c("WA", "OR", "CA", "NV", "ID", "MT", "WY", "CO", "HI", "AK")) ~ "West"
+  )) %>%
+  drop_na(Region)
+
+AdminBar <- SubData %>%
+  group_by(Region) %>%
+  dplyr::select(`Region`, 20:23) %>%
+  pivot_longer(!Region, names_to = "Vacc_Admin", values_to = "Count") %>%
+  group_by(Vacc_Admin)
+
+
+library(ggplot2)
+
+Graph_AdminBar <- AdminBar %>%
+  dplyr::filter(Region == "NorthEast") %>%
+  dplyr::summarise(sum = Count) %>%
+  ggplot(mapping = aes(x = Vacc_Admin, fill = Vacc_Admin)) +
+  geom_bar()
+  
+Graph_AdminBar
+
+
+```
+
+
 # Summary/Abstract
 _Write a summary of your project._
 
