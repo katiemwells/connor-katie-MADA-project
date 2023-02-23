@@ -93,23 +93,118 @@ SubData <- SubData %>%
   )) %>%
   drop_na(Region)
 
+library(tidyverse)
+
 AdminBar <- SubData %>%
-  group_by(Region) %>%
   dplyr::select(`Region`, 20:23) %>%
-  pivot_longer(!Region, names_to = "Vacc_Admin", values_to = "Count") %>%
-  group_by(Vacc_Admin)
+  group_by(`Region`)
+
+AdminBar3 <- SubData %>%
+  dplyr::select(`Region`, 20:23) %>%
+  tidyr::drop_na(everything()) %>%
+  dplyr::group_by(`Region`) %>%
+  dplyr::summarise(JanssenCount = sum(`Administered_Janssen`),
+                   ModernaCount = sum(`Administered_Moderna`),
+                   PfizerCount = sum(`Administered_Pfizer`),
+                   NovavaxCount = sum(`Administered_Novavax`)) %>%
+  pivot_longer(!Region, names_to = "Vacc_man", values_to = "Count")
+  
+  
 
 
 library(ggplot2)
 
-Graph_AdminBar <- AdminBar %>%
-  dplyr::filter(Region == "NorthEast") %>%
-  dplyr::summarise(sum = Count) %>%
-  ggplot(mapping = aes(x = Vacc_Admin, fill = Vacc_Admin)) +
-  geom_bar()
-  
-Graph_AdminBar
+AdminBar3$Region <- as.factor(AdminBar3$Region)
 
+AdminBar3$Count <- as.numeric(AdminBar3$Count)
+
+
+# Southeast Region
+RegionSoutheast <- AdminBar3 %>%
+  dplyr::filter(Region == "SouthEast") %>%
+  dplyr::select(2:3)
+
+RegionSoutheast$Vacc_man <- as.character(RegionSoutheast$Vacc_man)
+
+Graph_SEAdminBar <- RegionSoutheast %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_SEAdminBar <- Graph_SEAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the SouthEast", x = "Vaccine Manufacters", y = "Count")
+  
+  
+Graph_SEAdminBar
+
+
+
+
+# Northeast Region
+RegionNortheast <- AdminBar3 %>%
+  dplyr::filter(Region == "NorthEast") %>%
+  dplyr::select(2:3)
+
+RegionNortheast$Vacc_man <- as.character(RegionNortheast$Vacc_man)
+
+Graph_NEAdminBar <- RegionNortheast %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_NEAdminBar <- Graph_NEAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the NorthEast", x = "Vaccine Manufacters", y = "Count")
+
+Graph_NEAdminBar
+
+
+
+# MidWest Region
+RegionMidwest <- AdminBar3 %>%
+  dplyr::filter(Region == "MidWest") %>%
+  dplyr::select(2:3)
+
+RegionMidwest$Vacc_man <- as.character(RegionMidwest$Vacc_man)
+
+Graph_MWAdminBar <- RegionMidwest %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_MWAdminBar <- Graph_MWAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the Midwest", x = "Vaccine Manufacters", y = "Count")
+
+Graph_MWAdminBar
+
+
+# SouthWest Region
+RegionSouthwest <- AdminBar3 %>%
+  dplyr::filter(Region == "SouthWest") %>%
+  dplyr::select(2:3)
+
+RegionSouthwest$Vacc_man <- as.character(RegionSouthwest$Vacc_man)
+
+Graph_SWAdminBar <- RegionSouthwest %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_SWAdminBar <- Graph_SWAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the Southwest", x = "Vaccine Manufacters", y = "Count")
+
+Graph_SWAdminBar
+
+# West Region
+RegionWest <- AdminBar3 %>%
+  dplyr::filter(Region == "West") %>%
+  dplyr::select(2:3)
+
+RegionWest$Vacc_man <- as.character(RegionWest$Vacc_man)
+
+Graph_WAdminBar <- RegionWest %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_WAdminBar <- Graph_WAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the West", x = "Vaccine Manufacters", y = "Count")
+
+Graph_WAdminBar
 
 ```
 
