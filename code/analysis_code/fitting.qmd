@@ -1,0 +1,130 @@
+---
+title: "Fitting"
+format:
+  html:
+    theme: darkly
+---
+
+## Load Packages
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(plotly)
+library(performance)
+library(vip)
+```
+
+
+## Fitting
+```{r}
+##
+AdminTime1 <- SubData %>%
+  dplyr::group_by(`Region`) %>%
+  dplyr::select(`Region`, 20:23) %>%
+  pivot_longer(!Region, names_to = "Vacc_Admin", values_to = "Count")
+AdminTime1
+
+# Preparing linear model
+## Set engine
+lm_mod <- linear_reg() %>%
+  set_engine("lm")
+
+
+
+lm1 <- lm_mod %>%
+  fit(Count ~ Region, data = AdminTime1)
+lm1
+tidy(lm1)
+check_model(lm1$fit)
+
+
+lm2 <- lm_mod %>%
+  fit(Administered_Janssen ~ Region, data = SubData)
+lm2
+tidy(lm2)
+
+lm3 <- lm_mod %>%
+  fit(Administered_Moderna ~ Region, data = SubData)
+lm3
+tidy(lm3)
+
+lm4 <- lm_mod %>%
+  fit(Administered_Pfizer ~ Region, data = SubData)
+lm4
+tidy(lm4)
+
+
+lm5 <- lm_mod %>%
+  fit(Administered_Novavax ~ Region, data = SubData)
+lm5
+tidy(lm5)
+
+lm6 <- lm_mod %>%
+  fit(Administered_Unk_Manuf ~ Region, data = SubData)
+lm6
+tidy(lm6)
+
+
+lm7 <- lm_mod %>%
+  fit(Administered ~ Region + Distributed, data = SubData)
+lm7
+tidy(lm7)
+check_model(lm7$fit)
+
+lm8 <- lm_mod %>%
+  fit(Administered ~ Region, data = SubData)
+lm8
+tidy(lm8)
+
+lm9 <- lm_mod %>%
+  fit(Administered ~ Distributed, data = SubData)
+tidy(lm9)
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
