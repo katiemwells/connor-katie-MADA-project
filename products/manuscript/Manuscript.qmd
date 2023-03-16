@@ -20,6 +20,8 @@ library(here)
 library(knitr)
 library(tidyverse)
 ```
+
+# KATIE, EVERYTHING IN THE BELOW CODE CHUNK CAN BE DELECTED (IT WAS MOVED TO 'wrangling.qmd')
 ## Data import and cleaning
 ## Importing and viewing data
 ```{r}
@@ -52,7 +54,7 @@ HA - There is differences in COVID-19 vaccine (manufacturer) popularity across t
 _Write a summary of your project._
 
 
-
+# KATIE, EVERYTHING IN THE BELOW CHUNK HAS BEEN MOVED AND SPLIT UP. THIS CAN LIKELY BE DELETED UNLESS YOU WANTED TO PUT THE GRAPHS/TABLES HERE. RUN ALL 1. wrangling.qmd 2. exploration.qmd & 3. fitting.qmd IN THAT ORDER TO GET THE OUTPUTS IN YOUR ENVIRONMENT TO CODE THEM TO APPEAR HERE IF THAT'S WHAT YOU WANT! REMINDER!!!!! file 'fitting.qmd' WILL TAKE A WHILE TO RUN BECAUSE WE RAN CODE TO CHECK THE MODEL WE CREATED.
 ```{r}
 # Data Wrangling
 

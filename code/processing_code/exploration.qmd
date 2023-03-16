@@ -1,0 +1,89 @@
+---
+title: "Exploration"
+format:
+  html:
+    theme: darkly
+---
+
+## Exploring the data
+```{r}
+## Vacccine Distribution Overtime by Manufac. US Wide
+Graph_DisTime <- DisTime %>%
+  drop_na(Count)%>%
+  ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Dist)) +
+  geom_area() +
+  ggtitle("Vaccine distribution over time")
+Graph_DisTime
+
+
+
+## Vaccine Administration Overtime by Manufac. US Wide
+Graph_AdminTime <- AdminTime %>%
+  drop_na(Count)%>%
+  ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Admin)) +
+  geom_area() +
+  ggtitle("Vaccine Administration over time")
+Graph_AdminTime
+
+
+
+## Southeast Region
+Graph_SEAdminBar <- RegionSoutheast %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_SEAdminBar <- Graph_SEAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the SouthEast", x = "Vaccine Manufacters", y = "Count")
+  
+Graph_SEAdminBar
+
+
+
+## Northeast Region
+Graph_NEAdminBar <- RegionNortheast %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_NEAdminBar <- Graph_NEAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the NorthEast", x = "Vaccine Manufacters", y = "Count")
+
+Graph_NEAdminBar
+
+
+
+## MidWest Region
+Graph_MWAdminBar <- RegionMidwest %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_MWAdminBar <- Graph_MWAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the Midwest", x = "Vaccine Manufacters", y = "Count")
+
+Graph_MWAdminBar
+
+
+
+## SouthWest Region
+Graph_SWAdminBar <- RegionSouthwest %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_SWAdminBar <- Graph_SWAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the Southwest", x = "Vaccine Manufacters", y = "Count")
+
+Graph_SWAdminBar
+
+
+
+## West Region
+Graph_WAdminBar <- RegionWest %>%
+  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
+  geom_bar(stat = 'identity') 
+
+Graph_WAdminBar <- Graph_WAdminBar + geom_text(aes(label = Count)) + 
+  labs(title = "Vaccines Administered in the West", x = "Vaccine Manufacters", y = "Count")
+
+Graph_WAdminBar
+
+```
+

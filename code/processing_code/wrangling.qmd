@@ -1,0 +1,160 @@
+---
+title: "Wrangling"
+format:
+  html:
+    theme: darkly
+---
+
+
+## Wrangling the data
+
+## Loading packages
+```{r}
+# load a few R packages
+library(here)
+library(readr)
+library(readxl)
+library(knitr)
+library(tidyverse)
+library(lubridate)
+
+```
+
+## Importing the raw data
+```{r}
+## Loading the full-raw data set...
+Raw_USVac <- read_csv(here("data", "raw_data" , "COVID-19_Vaccinations_in_the_United_States_Jurisdiction.csv"))
+
+
+
+# Check data
+str(Raw_USVac)
+
+summary(Raw_USVac)
+
+
+
+# Format date variable.
+Raw_USVac$Date <- mdy(Raw_USVac$Date)
+
+
+# Save raw data
+write_rds(Raw_USVac, file = "../../data/raw_data/raw_data.rds")
+```
+
+
+## Sub data
+```{r}
+# Filter for only the date range we care about (21 - 22)
+SubData <- Raw_USVac %>%
+  filter(Date > '2021-02-01' & Date < '2022-12-31')
+
+
+
+## Vacccine Distribution Overtime by Manufac. US Wide
+DisTime <- SubData %>%
+  dplyr::group_by(`Date`) %>%
+  dplyr::select(`Date`, 5:8) %>%
+  pivot_longer(!Date, names_to = "Vacc_Dist", values_to = "Count")
+
+Graph_DisTime <- DisTime %>%
+  drop_na(Count)%>%
+  ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Dist)) +
+  geom_area() +
+  ggtitle("Vaccine distribution over time")
+Graph_DisTime
+
+
+
+## Vaccine Administration Overtime by Manufac. US Wide
+AdminTime <- SubData %>%
+  dplyr::group_by(`Date`) %>%
+  dplyr::select(`Date`, 20:23) %>%
+  pivot_longer(!Date, names_to = "Vacc_Admin", values_to = "Count")
+
+SubData <- SubData %>%
+  dplyr::mutate(Region = case_when(
+    (`Location` %in% c("ME", "VT", "NH", "MA", "CT", "RI", "NY", "NJ", "PA", "DE", "MD")) ~ "NorthEast",
+    (`Location` %in% c("DC", "WV", "VA", "KY", "NC", "TN", "AR", "LA", "MS", "AL", "GA", "FL", "SC")) ~ "SouthEast",
+    (`Location` %in% c("NA", "SD", "NE", "KS", "MN", "IA", "MO", "WI", "IL", "MI", "IN", "OH")) ~ "MidWest",
+    (`Location` %in% c("OK", "TX", "NM", "AZ")) ~ "SouthWest",
+    (`Location` %in% c("WA", "OR", "CA", "NV", "ID", "MT", "WY", "CO", "HI", "AK")) ~ "West"
+  )) %>%
+  drop_na(Region)
+
+
+
+AdminBar <- SubData %>%
+  dplyr::select(`Region`, 20:23) %>%
+  group_by(`Region`)
+
+
+
+AdminBar3 <- SubData %>%
+  dplyr::select(`Region`, 20:23) %>%
+  tidyr::drop_na(everything()) %>%
+  dplyr::group_by(`Region`) %>%
+  dplyr::summarise(JanssenCount = sum(`Administered_Janssen`),
+                   ModernaCount = sum(`Administered_Moderna`),
+                   PfizerCount = sum(`Administered_Pfizer`),
+                   NovavaxCount = sum(`Administered_Novavax`)) %>%
+  pivot_longer(!Region, names_to = "Vacc_man", values_to = "Count")
+
+
+
+# Graphing
+
+## Southeast Region
+RegionSoutheast <- AdminBar3 %>%
+  dplyr::filter(Region == "SouthEast") %>%
+  dplyr::select(2:3)
+
+
+## Northeast Region
+RegionNortheast <- AdminBar3 %>%
+  dplyr::filter(Region == "NorthEast") %>%
+  dplyr::select(2:3)
+
+
+## MidWest Region
+RegionMidwest <- AdminBar3 %>%
+  dplyr::filter(Region == "MidWest") %>%
+  dplyr::select(2:3)
+
+
+## SouthWest Region
+RegionSouthwest <- AdminBar3 %>%
+  dplyr::filter(Region == "SouthWest") %>%
+  dplyr::select(2:3)
+
+
+## West Region
+RegionWest <- AdminBar3 %>%
+  dplyr::filter(Region == "West") %>%
+  dplyr::select(2:3)
+
+
+
+# Prepare for exploration
+AdminBar3$Region <- as.factor(AdminBar3$Region)
+
+AdminBar3$Count <- as.numeric(AdminBar3$Count)
+
+RegionSoutheast$Vacc_man <- as.character(RegionSoutheast$Vacc_man)
+
+RegionNortheast$Vacc_man <- as.character(RegionNortheast$Vacc_man)
+
+RegionMidwest$Vacc_man <- as.character(RegionMidwest$Vacc_man)
+
+RegionSouthwest$Vacc_man <- as.character(RegionSouthwest$Vacc_man)
+
+RegionWest$Vacc_man <- as.character(RegionWest$Vacc_man)
+
+
+
+## Saving processed data
+write_rds(SubData, file = "../../data/processed_data/SubData.rds")
+write_csv(SubData, file = "../../data/processed_data/SubData.csv")
+
+
+```
