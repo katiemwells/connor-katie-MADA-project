@@ -7,7 +7,7 @@ format:
 
 ## Exploring the data
 ```{r}
-## Vacccine Distribution Overtime by Manufac. US Wide
+## Vaccine Distribution Overtime by Manufac. US Wide
 Graph_DisTime <- DisTime %>%
   drop_na(Count)%>%
   ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Dist)) +
@@ -86,4 +86,5 @@ Graph_WAdminBar <- Graph_WAdminBar + geom_text(aes(label = Count)) +
 Graph_WAdminBar
 
 ```
+
 

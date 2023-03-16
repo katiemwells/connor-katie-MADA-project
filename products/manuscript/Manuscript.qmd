@@ -10,289 +10,90 @@ format:
     highlight-style: github
 bibliography: ../dataanalysis_template_references.bib
 csl: ../apa.csl
-
 ---
-
 
 ```{r, echo=FALSE, message=FALSE}
 # load a few R packages
 library(here)
 library(knitr)
 library(tidyverse)
+library(tidymodels)
+library(knitr)
 ```
 
-# KATIE, EVERYTHING IN THE BELOW CODE CHUNK CAN BE DELECTED (IT WAS MOVED TO 'wrangling.qmd')
-## Data import and cleaning
-## Importing and viewing data
-```{r}
-
-## Loading the full-raw data set...
-Raw_USVac <- read_csv(here("data", "raw_data" , "COVID-19_Vaccinations_in_the_United_States_Jurisdiction.csv"))
-
-
-# Check data
-str(Raw_USVac)
-
-summary(Raw_USVac)
-
-```
-
-# Introduction 
+# Introduction
 
 ## General Background Information
-_Provide enough background on your topic that others can understand the why and how of your analysis_ 
+
+*Provide enough background on your topic that others can understand the why and how of your analysis*
 
 ## Description of data and data source
+
 This dataset contains US COVID-19 vaccine deliveries and administration data at national and jurisdiction level from all vaccine partners, including jurisdictional partner clinics, retail pharmacies, long-term care facilities, dialysis centers, Federal Emergency Management Agency and Health Resources and Services Administration partner sites, and federal entity facilities. It was obtained from https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-Jurisdi/unsk-b7fc. It has 109 columns and 37,500 rows of administration, distribution, and series data of COVID-19 vaccinations across the US.
 
 ## Questions/Hypotheses to be addressed
-Question: What/Which COVID-19 vaccine was most popular in each region of the United States?
-Hypotheses: H0 - There is not a difference in COVID-19 vaccine (across manufacturers) popularity across all the regions in the United States.
-HA - There is differences in COVID-19 vaccine (manufacturer) popularity across the regions in the United States.
+
+Question: What factors (like region) influenced COVID-19 vaccine distribution across the US? Hypotheses: H0 - There is not a difference in COVID-19 vaccine (across manufacturers) popularity across all the regions in the United States. HA - There is differences in COVID-19 vaccine (manufacturer) popularity across the regions in the United States.
 
 # Summary/Abstract
-_Write a summary of your project._
 
-
-# KATIE, EVERYTHING IN THE BELOW CHUNK HAS BEEN MOVED AND SPLIT UP. THIS CAN LIKELY BE DELETED UNLESS YOU WANTED TO PUT THE GRAPHS/TABLES HERE. RUN ALL 1. wrangling.qmd 2. exploration.qmd & 3. fitting.qmd IN THAT ORDER TO GET THE OUTPUTS IN YOUR ENVIRONMENT TO CODE THEM TO APPEAR HERE IF THAT'S WHAT YOU WANT! REMINDER!!!!! file 'fitting.qmd' WILL TAKE A WHILE TO RUN BECAUSE WE RAN CODE TO CHECK THE MODEL WE CREATED.
-```{r}
-# Data Wrangling
-
-## Take out year 2023. Only want data from 2021 - 2022.
-
-library(lubridate)
-
-Raw_USVac$Date <- mdy(Raw_USVac$Date)
-
-
-library(tidyverse)
-SubData <- Raw_USVac %>%
-  filter(Date > '2021-02-01' & Date < '2022-12-31')
-
-library(ggplot2)
-library(dplyr)
-
-## Vacccine Distribution Overtime by Manufac. US Wide
-DisTime <- SubData %>%
-  dplyr::group_by(`Date`) %>%
-  dplyr::select(`Date`, 5:8) %>%
-  pivot_longer(!Date, names_to = "Vacc_Dist", values_to = "Count")
-
-Graph_DisTime <- DisTime %>%
-  drop_na(Count)%>%
-  ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Dist)) +
-  geom_area() +
-  ggtitle("Vaccine distribution over time")
-Graph_DisTime
-
-## Vaccine Administration Overtime by Manufac. US Wide
-AdminTime <- SubData %>%
-  dplyr::group_by(`Date`) %>%
-  dplyr::select(`Date`, 20:23) %>%
-  pivot_longer(!Date, names_to = "Vacc_Admin", values_to = "Count")
-
-Graph_AdminTime <- AdminTime %>%
-  drop_na(Count)%>%
-  ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Admin)) +
-  geom_area() +
-  ggtitle("Vaccine Administration over time")
-Graph_AdminTime
-
-SubData <- SubData %>%
-  dplyr::mutate(Region = case_when(
-    (`Location` %in% c("ME", "VT", "NH", "MA", "CT", "RI", "NY", "NJ", "PA", "DE", "MD")) ~ "NorthEast",
-    (`Location` %in% c("DC", "WV", "VA", "KY", "NC", "TN", "AR", "LA", "MS", "AL", "GA", "FL", "SC")) ~ "SouthEast",
-    (`Location` %in% c("NA", "SD", "NE", "KS", "MN", "IA", "MO", "WI", "IL", "MI", "IN", "OH")) ~ "MidWest",
-    (`Location` %in% c("OK", "TX", "NM", "AZ")) ~ "SouthWest",
-    (`Location` %in% c("WA", "OR", "CA", "NV", "ID", "MT", "WY", "CO", "HI", "AK")) ~ "West"
-  )) %>%
-  drop_na(Region)
-
-library(tidyverse)
-
-AdminBar <- SubData %>%
-  dplyr::select(`Region`, 20:23) %>%
-  group_by(`Region`)
-
-AdminBar3 <- SubData %>%
-  dplyr::select(`Region`, 20:23) %>%
-  tidyr::drop_na(everything()) %>%
-  dplyr::group_by(`Region`) %>%
-  dplyr::summarise(JanssenCount = sum(`Administered_Janssen`),
-                   ModernaCount = sum(`Administered_Moderna`),
-                   PfizerCount = sum(`Administered_Pfizer`),
-                   NovavaxCount = sum(`Administered_Novavax`)) %>%
-  pivot_longer(!Region, names_to = "Vacc_man", values_to = "Count")
-  
-  
-
-
-library(ggplot2)
-
-AdminBar3$Region <- as.factor(AdminBar3$Region)
-
-AdminBar3$Count <- as.numeric(AdminBar3$Count)
-
-
-# Southeast Region
-RegionSoutheast <- AdminBar3 %>%
-  dplyr::filter(Region == "SouthEast") %>%
-  dplyr::select(2:3)
-
-RegionSoutheast$Vacc_man <- as.character(RegionSoutheast$Vacc_man)
-
-Graph_SEAdminBar <- RegionSoutheast %>%
-  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
-  geom_bar(stat = 'identity') 
-
-Graph_SEAdminBar <- Graph_SEAdminBar + geom_text(aes(label = Count)) + 
-  labs(title = "Vaccines Administered in the SouthEast", x = "Vaccine Manufacters", y = "Count")
-  
-  
-Graph_SEAdminBar
-
-
-
-
-# Northeast Region
-RegionNortheast <- AdminBar3 %>%
-  dplyr::filter(Region == "NorthEast") %>%
-  dplyr::select(2:3)
-
-RegionNortheast$Vacc_man <- as.character(RegionNortheast$Vacc_man)
-
-Graph_NEAdminBar <- RegionNortheast %>%
-  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
-  geom_bar(stat = 'identity') 
-
-Graph_NEAdminBar <- Graph_NEAdminBar + geom_text(aes(label = Count)) + 
-  labs(title = "Vaccines Administered in the NorthEast", x = "Vaccine Manufacters", y = "Count")
-
-Graph_NEAdminBar
-
-
-
-# MidWest Region
-RegionMidwest <- AdminBar3 %>%
-  dplyr::filter(Region == "MidWest") %>%
-  dplyr::select(2:3)
-
-RegionMidwest$Vacc_man <- as.character(RegionMidwest$Vacc_man)
-
-Graph_MWAdminBar <- RegionMidwest %>%
-  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
-  geom_bar(stat = 'identity') 
-
-Graph_MWAdminBar <- Graph_MWAdminBar + geom_text(aes(label = Count)) + 
-  labs(title = "Vaccines Administered in the Midwest", x = "Vaccine Manufacters", y = "Count")
-
-Graph_MWAdminBar
-
-
-# SouthWest Region
-RegionSouthwest <- AdminBar3 %>%
-  dplyr::filter(Region == "SouthWest") %>%
-  dplyr::select(2:3)
-
-RegionSouthwest$Vacc_man <- as.character(RegionSouthwest$Vacc_man)
-
-Graph_SWAdminBar <- RegionSouthwest %>%
-  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
-  geom_bar(stat = 'identity') 
-
-Graph_SWAdminBar <- Graph_SWAdminBar + geom_text(aes(label = Count)) + 
-  labs(title = "Vaccines Administered in the Southwest", x = "Vaccine Manufacters", y = "Count")
-
-Graph_SWAdminBar
-
-# West Region
-RegionWest <- AdminBar3 %>%
-  dplyr::filter(Region == "West") %>%
-  dplyr::select(2:3)
-
-RegionWest$Vacc_man <- as.character(RegionWest$Vacc_man)
-
-Graph_WAdminBar <- RegionWest %>%
-  ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
-  geom_bar(stat = 'identity') 
-
-Graph_WAdminBar <- Graph_WAdminBar + geom_text(aes(label = Count)) + 
-  labs(title = "Vaccines Administered in the West", x = "Vaccine Manufacters", y = "Count")
-
-Graph_WAdminBar
-
-```
-We plan to break this up later into separate sections/R scripts in a cleaner version but this will work for our preliminary purposes. Here we show the frequency of the distribution and administration of the different vaccine manufacturers over 2021-2022. We also show the number of each type of vaccine administered in each region that we designated. In out statistical analysis we plan to bring in population data for each region and discover trends in vaccine administration, distribution, and preference in relation to population.
-
-
+*Write a summary of your project.*
 
 {{< pagebreak >}}
 
+# Methods
 
-
-# Methods 
-
-_Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement._
-
+*Describe your methods. That should describe the data, the cleaning processes, and the analysis approaches. You might want to provide a shorter description here and all the details in the supplement.*
 
 ## Data aquisition
-_As applicable, explain where and how you got the data. If you directly import the data from an online source, you can combine this section with the next._
 
-
+*As applicable, explain where and how you got the data. If you directly import the data from an online source, you can combine this section with the next.*
 
 ## Statistical analysis
+
 After placing each state in a region of the US, we will conduct a time series analysis to determine the change in popularity over time. Further, we intended to plot overall administration of manufacturer-specific vaccines in each region to determine popularity after adjusting for distribution and time.
 
-
 {{< pagebreak >}}
-
 
 # Results
 
 ## Exploratory/Descriptive analysis
 
-_Use a combination of text/tables/figures to explore and describe your data. Show the most important descriptive results here. Additional ones should go in the supplement. Even more can be in the R and Quarto files that are part of your project._
+Here are the main results from our exploratory analysis where we plotted the distributed and administered vaccines over the observed period. Individual bar graphs for each region can be found in the 'exploration.qmd' file in the 'processing_code' file.
 
+![](images/image-19820666.png)
 
+![](images/image-1680087526.png){width="623"}
 
 ## Basic statistical analysis
 
-_To get some further insight into your data, if reasonable you could compute simple statistics (e.g. simple models with 1 predictor) to look for associations between your outcome(s) and each individual predictor variable. Though note that unless you pre-specified the outcome and main exposure, any "p<0.05 means statistical significance" interpretation is not valid._
+Here are the main results from our initial fitting analysis. Each is displayed in a tibble. Note: we may not keep all of these fits in our final project but we calculated them all to view the results. Further checking of the models can be found in the 'fitting.qmd' in the 'analysis_code' folder.
 
-
+###reminder for katie later: use kable and save tibbles as RDS!!!!!
 
 
 ## Full analysis
 
-_Use one or several suitable statistical/machine learning methods to analyze your data and to produce meaningful figures, tables, etc. This might again be code that is best placed in one or several separate R scripts that need to be well documented. You want the code to produce figures and data ready for display as tables, and save those. Then you load them here._
-
-
-
-
-
+*Use one or several suitable statistical/machine learning methods to analyze your data and to produce meaningful figures, tables, etc. This might again be code that is best placed in one or several separate R scripts that need to be well documented. You want the code to produce figures and data ready for display as tables, and save those. Then you load them here.*
 
 {{< pagebreak >}}
-
 
 # Discussion
 
 ## Summary and Interpretation
-_Summarize what you did, what you found and what it means._
+
+*Summarize what you did, what you found and what it means.*
 
 ## Strengths and Limitations
-_Discuss what you perceive as strengths and limitations of your analysis._
+
+*Discuss what you perceive as strengths and limitations of your analysis.*
 
 ## Conclusions
-_What are the main take-home messages?_
 
-_Include citations in your Rmd file using bibtex, the list of references will automatically be placed at the end_
+*What are the main take-home messages?*
 
-
-
+*Include citations in your Rmd file using bibtex, the list of references will automatically be placed at the end*
 
 {{< pagebreak >}}
 
 # References
-
-
-
