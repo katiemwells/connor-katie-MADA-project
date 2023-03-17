@@ -12,13 +12,12 @@ bibliography: ../dataanalysis_template_references.bib
 csl: ../apa.csl
 ---
 
-```{r, echo=FALSE, message=FALSE}
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
 # load a few R packages
 library(here)
 library(knitr)
 library(tidyverse)
 library(tidymodels)
-library(knitr)
 ```
 
 # Introduction
@@ -33,7 +32,7 @@ This dataset contains US COVID-19 vaccine deliveries and administration data at 
 
 ## Questions/Hypotheses to be addressed
 
-Question: What factors (like region) influenced COVID-19 vaccine distribution across the US? Hypotheses: H0 - There is not a difference in COVID-19 vaccine (across manufacturers) popularity across all the regions in the United States. HA - There is differences in COVID-19 vaccine (manufacturer) popularity across the regions in the United States.
+Question: What factors (like region) influenced COVID-19 vaccines across the US? Hypotheses: H0 - There is not a difference in COVID-19 vaccine (across manufacturers) popularity across all the regions in the United States. HA - There is differences in COVID-19 vaccine (manufacturer) popularity across the regions in the United States.
 
 # Summary/Abstract
 
@@ -67,10 +66,24 @@ Here are the main results from our exploratory analysis where we plotted the dis
 
 ## Basic statistical analysis
 
-Here are the main results from our initial fitting analysis. Each is displayed in a tibble. Note: we may not keep all of these fits in our final project but we calculated them all to view the results. Further checking of the models can be found in the 'fitting.qmd' in the 'analysis_code' folder.
+Here are the main results from our initial fitting analysis. Note: we may not keep all of these fits in our final project but we calculated them all to view the results. Further checking of the models can be found in the 'fitting.qmd' in the 'analysis_code' folder.
 
-###reminder for katie later: use kable and save tibbles as RDS!!!!!
+```{r}
+resulttable1 <- readRDS(here("code", "analysis_code", "lm7.rds"))
+kable(resulttable1)
+```
+```{r}
+resulttable2 <- readRDS(here("code", "analysis_code", "lm8.rds"))
+kable(resulttable2)
+```
 
+```{r}
+resulttable3 <- readRDS(here("code", "analysis_code", "lm9.rds"))
+kable(resulttable3)
+```
+
+
+{{< pagebreak >}}
 
 ## Full analysis
 

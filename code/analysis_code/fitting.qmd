@@ -84,6 +84,16 @@ tidy(lm9)
 ```
 
 
+```{r}
+#save tibbles as df
+lm7_df <- tidy(lm7)
+lm8_df <- tidy(lm8)
+lm9_df <- tidy(lm9)
+#saving results as rds files
+saveRDS(lm7_df, "lm7.rds")
+saveRDS(lm8_df, "lm8.rds")
+saveRDS(lm9_df, "lm9.rds")
+```
 
 
 
