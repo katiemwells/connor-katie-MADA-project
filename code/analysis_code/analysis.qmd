@@ -1,0 +1,20 @@
+---
+title: "Analysis"
+format: html
+---
+
+# Analysis
+
+## Load Packages and data files
+```{r}
+library(tidymodels)
+library(tidyverse)
+library(here)
+
+SubData <- read_rds(here("data", "processed_data", "SubData.rds"))
+```
+
+
+
+
+

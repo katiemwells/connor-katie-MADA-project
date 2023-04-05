@@ -40,6 +40,48 @@ Raw_USVac$Date <- mdy(Raw_USVac$Date)
 
 # Save raw data
 write_rds(Raw_USVac, file = "../../data/raw_data/raw_data.rds")
+
+
+
+# Load full-raw supplementary data set...
+Raw_Sup_Data <- read_csv(here("data", "raw_data", "ACS21.csv"))
+
+glimpse(Raw_Sup_Data)
+
+clean_sup <- Raw_Sup_Data %>%
+  select(!contains("Margin of Error")) %>%
+  filter(!row_number() %in% c(14, 15, 16, 17))
+
+clean_sup_long <- clean_sup %>%
+  t()
+
+clean_sup_long <- as.data.frame(clean_sup_long)
+
+clean_sup_long <- clean_sup_long %>% 
+  janitor::row_to_names(row_number = 1)
+
+row.names(clean_sup_long) <- sub('!!Households!!Estimate', '', row.names(clean_sup_long))
+
+clean_sup_long$State <- state.abb[match(row.names(clean_sup_long),state.name)]
+
+clean_sup_long <- clean_sup_long %>%
+  filter(!row_number() %in% c(51))
+
+clean_sup_long <- clean_sup_long %>%
+  dplyr::mutate(Region = case_when(
+    (`State` %in% c("ME", "VT", "NH", "MA", "CT", "RI", "NY", "NJ", "PA", "DE", "MD")) ~ "NorthEast",
+    (`State` %in% c("DC", "WV", "VA", "KY", "NC", "TN", "AR", "LA", "MS", "AL", "GA", "FL", "SC")) ~ "SouthEast",
+    (`State` %in% c("NA", "SD", "NE", "KS", "MN", "IA", "MO", "WI", "IL", "MI", "IN", "OH")) ~ "MidWest",
+    (`State` %in% c("OK", "TX", "NM", "AZ")) ~ "SouthWest",
+    (`State` %in% c("WA", "OR", "CA", "NV", "ID", "MT", "WY", "CO", "HI", "AK")) ~ "West"
+  ))
+
+clean_sup_long <- clean_sup_long %>%
+  remove_rownames()
+
+clean_sup_long <- clean_sup_long %>%
+  column_to_rownames(var = "State")
+
 ```
 
 
@@ -47,7 +89,7 @@ write_rds(Raw_USVac, file = "../../data/raw_data/raw_data.rds")
 ```{r}
 # Filter for only the date range we care about (21 - 22)
 SubData <- Raw_USVac %>%
-  filter(Date > '2021-02-01' & Date < '2022-12-31')
+  filter(Date > '2021-02-01' & Date < '2021-12-31')
 
 
 
@@ -75,10 +117,10 @@ AdminTime <- SubData %>%
 SubData <- SubData %>%
   dplyr::mutate(Region = case_when(
     (`Location` %in% c("ME", "VT", "NH", "MA", "CT", "RI", "NY", "NJ", "PA", "DE", "MD")) ~ "NorthEast",
-    (`Location` %in% c("DC", "WV", "VA", "KY", "NC", "TN", "AR", "LA", "MS", "AL", "GA", "FL", "SC")) ~ "SouthEast",
-    (`Location` %in% c("NA", "SD", "NE", "KS", "MN", "IA", "MO", "WI", "IL", "MI", "IN", "OH")) ~ "MidWest",
+    (`Location` %in% c("WV", "VA", "KY", "NC", "TN", "AR", "LA", "MS", "AL", "GA", "FL", "SC")) ~ "SouthEast",
+    (`Location` %in% c("SD", "NE", "KS", "MN", "IA", "MO", "WI", "IL", "MI", "IN", "OH", "ND")) ~ "MidWest",
     (`Location` %in% c("OK", "TX", "NM", "AZ")) ~ "SouthWest",
-    (`Location` %in% c("WA", "OR", "CA", "NV", "ID", "MT", "WY", "CO", "HI", "AK")) ~ "West"
+    (`Location` %in% c("WA", "OR", "CA", "NV", "ID", "MT", "WY", "CO", "HI", "AK", "UT")) ~ "West"
   )) %>%
   drop_na(Region)
 
@@ -149,6 +191,8 @@ RegionMidwest$Vacc_man <- as.character(RegionMidwest$Vacc_man)
 RegionSouthwest$Vacc_man <- as.character(RegionSouthwest$Vacc_man)
 
 RegionWest$Vacc_man <- as.character(RegionWest$Vacc_man)
+
+
 
 
 
