@@ -43,44 +43,16 @@ write_rds(Raw_USVac, file = "../../data/raw_data/raw_data.rds")
 
 
 
-# Load full-raw supplementary data set...
-Raw_Sup_Data <- read_csv(here("data", "raw_data", "ACS21.csv"))
+# Load full-raw supplementary data set (Income)...
+Raw_Sup_Data_Income <- read_csv(here("data", "raw_data", "ACS21.csv"))
 
-glimpse(Raw_Sup_Data)
+glimpse(Raw_Sup_Data_Income)
 
-clean_sup <- Raw_Sup_Data %>%
-  select(!contains("Margin of Error")) %>%
-  filter(!row_number() %in% c(14, 15, 16, 17))
 
-clean_sup_long <- clean_sup %>%
-  t()
+# Load full-raw supplementary data set (Education)...
+Raw_Sup_Data_Edu <- read_excel(here("data", "raw_data", "ACS21Edu.xlsx"))
 
-clean_sup_long <- as.data.frame(clean_sup_long)
-
-clean_sup_long <- clean_sup_long %>% 
-  janitor::row_to_names(row_number = 1)
-
-row.names(clean_sup_long) <- sub('!!Households!!Estimate', '', row.names(clean_sup_long))
-
-clean_sup_long$State <- state.abb[match(row.names(clean_sup_long),state.name)]
-
-clean_sup_long <- clean_sup_long %>%
-  filter(!row_number() %in% c(51))
-
-clean_sup_long <- clean_sup_long %>%
-  dplyr::mutate(Region = case_when(
-    (`State` %in% c("ME", "VT", "NH", "MA", "CT", "RI", "NY", "NJ", "PA", "DE", "MD")) ~ "NorthEast",
-    (`State` %in% c("DC", "WV", "VA", "KY", "NC", "TN", "AR", "LA", "MS", "AL", "GA", "FL", "SC")) ~ "SouthEast",
-    (`State` %in% c("NA", "SD", "NE", "KS", "MN", "IA", "MO", "WI", "IL", "MI", "IN", "OH")) ~ "MidWest",
-    (`State` %in% c("OK", "TX", "NM", "AZ")) ~ "SouthWest",
-    (`State` %in% c("WA", "OR", "CA", "NV", "ID", "MT", "WY", "CO", "HI", "AK")) ~ "West"
-  ))
-
-clean_sup_long <- clean_sup_long %>%
-  remove_rownames()
-
-clean_sup_long <- clean_sup_long %>%
-  column_to_rownames(var = "State")
+glimpse(Raw_Sup_Data_Edu)
 
 ```
 
@@ -200,5 +172,130 @@ RegionWest$Vacc_man <- as.character(RegionWest$Vacc_man)
 write_rds(SubData, file = "../../data/processed_data/SubData.rds")
 write_csv(SubData, file = "../../data/processed_data/SubData.csv")
 
+
+```
+
+
+## Clean Supplementary DataSet and Join (Income)
+```{r}
+clean_sup <- Raw_Sup_Data_Income %>%
+  select(!contains("Margin of Error")) %>%
+  filter(!row_number() %in% c(14, 15, 16, 17))
+
+clean_sup_long <- clean_sup %>%
+  t()
+
+clean_sup_long <- as.data.frame(clean_sup_long)
+
+clean_sup_long <- clean_sup_long %>% 
+  janitor::row_to_names(row_number = 1)
+
+row.names(clean_sup_long) <- sub('!!Households!!Estimate', '', row.names(clean_sup_long))
+
+clean_sup_long$State <- state.abb[match(row.names(clean_sup_long),state.name)]
+
+clean_sup_long <- clean_sup_long %>%
+  filter(!row_number() %in% c(51))
+
+clean_sup_long <- clean_sup_long %>%
+  dplyr::mutate(Region = case_when(
+    (`State` %in% c("ME", "VT", "NH", "MA", "CT", "RI", "NY", "NJ", "PA", "DE", "MD")) ~ "NorthEast",
+    (`State` %in% c("DC", "WV", "VA", "KY", "NC", "TN", "AR", "LA", "MS", "AL", "GA", "FL", "SC")) ~ "SouthEast",
+    (`State` %in% c("NA", "SD", "NE", "KS", "MN", "IA", "MO", "WI", "IL", "MI", "IN", "OH")) ~ "MidWest",
+    (`State` %in% c("OK", "TX", "NM", "AZ")) ~ "SouthWest",
+    (`State` %in% c("WA", "OR", "CA", "NV", "ID", "MT", "WY", "CO", "HI", "AK")) ~ "West"
+  ))
+
+clean_sup_long <- clean_sup_long %>%
+  remove_rownames()
+
+clean_sup_long <- clean_sup_long %>%
+  relocate(State, .before = Total)
+
+SubData <- rename(SubData, State = Location)
+
+SubData <- SubData %>%
+  relocate(State, .before = MMWR_week)
+
+Clean_Complete <- inner_join(SubData, clean_sup_long, by = "State")
+
+Clean_Complete <- Clean_Complete %>%
+  select(!"Region.y")
+
+Clean_Complete <- Clean_Complete %>%
+  select(!contains(c("Bivalent", "Additional", "Booster")))
+
+Clean_Complete <- rename(Clean_Complete, Region = Region.x)
+
+Clean_Complete <- Clean_Complete %>%
+  filter(MMWR_week == 52)
+
+Clean_Complete <- Clean_Complete %>%
+  filter(Date == "2021-12-30")
+
+
+Clean_Complete <- Clean_Complete %>%
+  select(!contains(c("Dist", "Distributed", "Per", "Dose", "Pct", "Unk")))
+
+Clean_Complete$`Median income (dollars)` <- sub(',', '', Clean_Complete$`Median income (dollars)`)  
+
+Clean_Complete$`Median income (dollars)` <- as.numeric(Clean_Complete$`Median income (dollars)`)
+
+# U.S. Median household income for 2021 $69,717
+## Bin / Create binary predictor
+
+Clean_Complete <- Clean_Complete %>%
+  mutate(Median_Binary = case_when((`Median income (dollars)` > 69717 ~ 1),
+                                   `Median income (dollars)`< 69717 ~ 0))
+Clean_Complete <- Clean_Complete %>%
+  mutate(Mean_Binary = case_when((`Mean income (dollars)` > 97962 ~ 1),
+                                 `Mean income (dollars)` < 97962 ~ 0))
+
+saveRDS(Clean_Complete, file = "../../data/processed_data/Clean_Complete.rds")
+
+```
+
+
+
+## Clean supplementary dataset and join (Edu)
+```{r}
+Clean_edu <- Raw_Sup_Data_Edu %>%
+  select(!contains(c("Male", "Female", "Percent"))) %>%
+  filter(!row_number() %in% c(29:68))
+
+clean_sup_long_edu <- Clean_edu %>%
+  t()
+
+clean_sup_long_edu <- as.data.frame(clean_sup_long_edu)
+
+clean_sup_long_edu <- clean_sup_long_edu %>% 
+  janitor::row_to_names(row_number = 1)
+
+row.names(clean_sup_long_edu) <- sub('!!Total!!Estimate', '', row.names(clean_sup_long_edu))
+
+
+clean_sup_long_edu$State <- state.abb[match(row.names(clean_sup_long_edu),state.name)]
+
+
+
+clean_sup_long_edu <- clean_sup_long_edu %>%
+  remove_rownames()
+
+clean_sup_long_edu <- clean_sup_long_edu %>%
+  relocate(State, .before = `AGE BY EDUCATIONAL ATTAINMENT`)
+
+
+
+##### Unable to run this portion down. Can't get rid of duplicate columns without coverting character to numeric. Can't convert to numberic without getting rid of duplicate columns. Unsure where to go.
+
+#clean_sup_long_edu <- clean_sup_long_edu %>%
+#  mutate_if(is.character, as.numeric)
+            
+#clean_sup_long_edu <- as.data.frame(do.call(cbind, by(t(clean_sup_long_edu), INDICES = names(clean_sup_long_edu), FUN = colSums)))
+
+#clean_sup_long_edu <- clean_sup_long_edu %>%
+#  select(!contains(c("AGE BY", "Population")))
+
+#Clean_Complete <- inner_join(Clean_Complete, clean_sup_long_edu, by = "State")
 
 ```

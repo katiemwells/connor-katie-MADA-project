@@ -10,11 +10,203 @@ format: html
 library(tidymodels)
 library(tidyverse)
 library(here)
+library(rpart)
+library(glmnet)
+library(ranger)
+library(vip)
 
 SubData <- read_rds(here("data", "processed_data", "SubData.rds"))
+Clean_Complete <- read_rds(here("data", "processed_data", "Clean_Complete.rds"))
 ```
 
 
+## Split 
+```{r}
+
+# Set Seed
+set.seed(123)
+
+
+# Split and create test/train
+split <- initial_split(Clean_Complete, prop = 7/10, strata = Administered)
+
+Admin_Train1 <- training(split)
+Admin_Test1 <- testing(split)
+
+
+# Train
+
+## 5 fold cv
+folds_train <- vfold_cv(Admin_Train1, v = 5, repeats = 1, strata = Administered)
+folds_train
+
+folds_test <- vfold_cv(Admin_Test1, v = 5, repeats = 1, strata = Administered)
+folds_test
+
+
+# Recipe
+
+Admin_rec1 <- recipe(Administered ~ Region + Median_Binary + Mean_Binary, data = Clean_Complete)
+
+# Null Model performance
+## Create Train
+null_mod1 <- null_model() %>%
+  set_engine("parsnip") %>%
+  set_mode("regression")
+
+## Cooking off
+null_recipe_train <- recipe(Administered ~ 1, data = Admin_Train1)
+
+null_workflow_train <- workflow() %>%
+  add_model(null_mod1) %>%
+  add_recipe(null_recipe_train)
+
+extract_parameter_set_dials(null_workflow_train)
+
+null_train_fit <- 
+  fit_resamples(null_workflow_train, resamples = folds_train)
+
+### Create Test
+
+null_recipe_test <- recipe(Administered ~ 1, data = Admin_Test1)
+
+null_workflow_test <- workflow() %>%
+  add_model(null_mod1) %>%
+  add_recipe(null_recipe_test)
+
+extract_parameter_set_dials(null_workflow_test)
+
+null_test_fit <-
+  fit_resamples(null_workflow_test, resamples = folds_test)
+
+null_train_fit %>%
+  collect_metrics()
+null_test_fit %>%
+  collect_metrics()
+```
+
+
+## Model Specification
+```{r}
+
+tune_spec <- decision_tree(cost_complexity = tune(),
+                           tree_depth = tune()) %>%
+  set_engine("rpart") %>%
+  set_mode("regression")
+tune_spec
+
+
+```
+
+## Workflow Definition
+```{r}
+tree_workflow <- workflow() %>%
+  add_model(tune_spec) %>%
+  add_recipe(Admin_rec1)
+
+
+```
+
+
+## Tuning Grid Specification
+```{r}
+tree_grid <- grid_regular(cost_complexity(),
+                          tree_depth(),
+                          levels = 5)
+tree_grid
+tree_grid %>%
+  count(tree_depth)
+
+
+```
+
+
+
+## Tuning using CV and Tune_grid()
+```{r}
+tree_res <- tree_workflow %>%
+  tune_grid(
+    resamples = folds_train,
+    grid = tree_grid
+  )
+tree_res
+tree_res %>%
+  collect_metrics()
+
+
+```
+
+
+## Plot
+```{r}
+# Plot using autoplot
+
+tree_res %>%
+  autoplot()
+
+
+```
+
+
+## Choosing best model
+```{r}
+
+tree_res %>%
+  show_best(metric = "rmse")
+
+best_tree <- tree_res %>%
+  select_best(metric = "rmse")
+
+best_tree
+
+```
+
+## Final Fit with best Model
+```{r}
+
+final_tree_workflow <- tree_workflow %>%
+  finalize_workflow(best_tree)
+
+final_tree_fit <- final_tree_workflow %>%
+  fit(data = Admin_Train1)
+
+final_tree_fit
+
+```
+
+## Plot Tree
+```{r}
+
+rpart.plot:: rpart.plot(extract_fit_parsnip(final_tree_fit)$fit)
+
+```
+## Performance
+```{r}
+
+tree_res %>%
+  show_best(metric = "rmse", n = 1)
+
+null_train_fit %>%
+  collect_metrics(metric = "rmse")
+
+
+```
+
+
+## Final Evaluation
+```{r}
+
+tree_last_fit <- final_tree_workflow %>%
+  last_fit(split)
+
+tree_last_fit %>%
+  collect_metrics()
+
+null_test_fit %>%
+  collect_metrics()
+
+
+```
 
 
 

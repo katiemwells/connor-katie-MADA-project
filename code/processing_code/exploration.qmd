@@ -85,6 +85,10 @@ Graph_WAdminBar <- Graph_WAdminBar + geom_text(aes(label = Count)) +
 
 Graph_WAdminBar
 
+
+Clean_Complete %>%
+  ggplot(mapping = aes(x = `Median income (dollars)`)) +
+  geom_histogram(bins = 15)
 ```
 
 
