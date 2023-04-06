@@ -53,18 +53,6 @@ lm4 <- lm_mod %>%
 lm4
 tidy(lm4)
 
-
-lm5 <- lm_mod %>%
-  fit(Administered_Novavax ~ Region, data = SubData)
-lm5
-tidy(lm5)
-
-lm6 <- lm_mod %>%
-  fit(Administered_Unk_Manuf ~ Region, data = SubData)
-lm6
-tidy(lm6)
-
-
 lm7 <- lm_mod %>%
   fit(Administered ~ Region + Distributed, data = SubData)
 lm7
