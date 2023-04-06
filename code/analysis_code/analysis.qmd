@@ -208,5 +208,25 @@ null_test_fit %>%
 
 ```
 
+```{r}
+#save results as dataframes
+null_test_df <- null_test_fit %>%
+  collect_metrics() %>%
+  as.data.frame()
+null_train_df <- null_train_fit %>%
+  collect_metrics(metric = "rmse") %>%
+  as.data.frame()
+tree_last_df <- tree_last_fit %>%
+  collect_metrics() %>% 
+  as.data.frame()
+best_tree_df <- tree_res %>%
+  show_best(metric = "rmse", n = 1) %>%
+  as.data.frame()
+#save dataframes as rds
+saveRDS(null_test_df, "null_test_df.rds")
+saveRDS(null_train_df, "null_train_df.rds")
+saveRDS(tree_last_df, "tree_last_df.rds")
+saveRDS(best_tree_df, "best_tree_df.rds")
+```
 
 

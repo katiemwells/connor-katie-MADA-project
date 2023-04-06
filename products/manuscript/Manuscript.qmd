@@ -8,7 +8,7 @@ format:
     toc: false
     number-sections: true
     highlight-style: github
-bibliography: ../dataanalysis_template_references.bib
+bibliography: ../mada_project.bib
 csl: ../apa.csl
 ---
 
@@ -24,15 +24,23 @@ library(tidymodels)
 
 ## General Background Information
 
-*Provide enough background on your topic that others can understand the why and how of your analysis*
+A little over three years ago, the world was brought to its knees by a virus no one had heard of before. SARS-CoV-2, which causes the disease COVID-19, ravaged the world and caused millions of deaths [@cdc_cdc_nodate]. Scientists and researchers worked tirelessly during 2020 to develop vaccines to stop the spread and lessen the symptoms, and by the end of the year emergency use authorizations were given to administer the first immunizations.  
+
+After the first vaccines were approved, a rollout began across the United States to distribute the new immunizations. In the beginning, priority was given to healthcare workers, long-term care facility residents, essential workers, those with high-risk conditions, and older adults. Distribution then began to other groups as supply warranted. Throughout 2021 and 2022, immunizations continued to be distributed to each state through health departments, pharmacies, doctor's offices, and many other settings [@dooling_advisory_2021]. Distribution did not always equal administration, however, and many factors may have affected whether or not someone received a vaccine. 
+
+Income is an integral predictor of health outcomes; previous studies have shown that there are large health differences between high and low income groups [@zimmerman_trends_2019]. Studies have also shown that low income is associated with low vaccine uptake [@kawai_racialethnic_2021]. Low income areas are likely to have less access to healthcare facilities, which may contribute to these numbers. 
+
+To investigate if any outside factors affected administration, we are going to compare region groups and median income data for each state to administration numbers and investigate their relationships. We expect to see states with lower median incomes (and therefore regions with lower median incomes) having lower administration numbers. 
 
 ## Description of data and data source
 
-This dataset contains US COVID-19 vaccine deliveries and administration data at national and jurisdiction level from all vaccine partners, including jurisdictional partner clinics, retail pharmacies, long-term care facilities, dialysis centers, Federal Emergency Management Agency and Health Resources and Services Administration partner sites, and federal entity facilities. It was obtained from https://data.cdc.gov/Vaccinations/COVID-19-Vaccinations-in-the-United-States-Jurisdi/unsk-b7fc. It has 109 columns and 37,500 rows of administration, distribution, and series data of COVID-19 vaccinations across the US.
+The main dataset contains US COVID-19 vaccine deliveries and administration data at national and jurisdiction level from all vaccine partners, including jurisdictional partner clinics, retail pharmacies, long-term care facilities, dialysis centers, Federal Emergency Management Agency and Health Resources and Services Administration partner sites, and federal entity facilities [@cdc_covid-19_nodate]. It has 109 columns and 37,500 rows of administration, distribution, and series data of COVID-19 vaccinations across the US.
+
+To use income data in our analysis, we uses US Census Bureau ACS Income date from 2021 [@us_census_bureau_american_2021]. This data was taken from the American Community Survey. 
 
 ## Questions/Hypotheses to be addressed
 
-Question: What factors (like region) influenced COVID-19 vaccines across the US? Hypotheses: H0 - There is not a difference in COVID-19 vaccine (across manufacturers) popularity across all the regions in the United States. HA - There is differences in COVID-19 vaccine (manufacturer) popularity across the regions in the United States.
+Question: What factors (like region or median income) influenced COVID-19 vaccines across the US? Hypotheses: H0 - There is no association between region or median income per state and COVID-19 vaccine administration in the United States. HA - There is an association between region or median income and COVID-19 vaccine administration in the United States.
 
 # Summary/Abstract
 
@@ -87,7 +95,22 @@ kable(resulttable3)
 
 ## Full analysis
 
-*Use one or several suitable statistical/machine learning methods to analyze your data and to produce meaningful figures, tables, etc. This might again be code that is best placed in one or several separate R scripts that need to be well documented. You want the code to produce figures and data ready for display as tables, and save those. Then you load them here.*
+Comparing the best tree model to the null model fitted with the training dataset.
+
+```{r}
+resulttable4 <- readRDS(here("code", "analysis_code", "best_tree_df.rds"))
+kable(resulttable4)
+resulttable5 <- readRDS(here("code", "analysis_code", "null_train_df.rds"))
+kable(resulttable5)
+```
+Comparing the last tree fit with the null model fitted with the testing data. 
+
+```{r}
+resulttable6 <- readRDS(here("code", "analysis_code", "tree_last_df.rds"))
+kable(resulttable6)
+resulttable7 <- readRDS(here("code", "analysis_code", "null_test_df.rds"))
+kable(resulttable7)
+```
 
 {{< pagebreak >}}
 
