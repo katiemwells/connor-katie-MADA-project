@@ -12,8 +12,13 @@ Graph_DisTime <- DisTime %>%
   drop_na(Count)%>%
   ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Dist)) +
   geom_area() +
-  ggtitle("Vaccine distribution over time")
+  labs(title = "Vaccine distribution over time (Year 2021)", x = "Date", y = "Count", fill = "Vaccine Manufacturer") +
+  scale_fill_discrete(labels=c('Janssen', 'Moderna', 'Pfizer')) +
+  theme(plot.title = element_text(face = "bold"), legend.position = "bottom")
 Graph_DisTime
+
+Graph_DisTime %>%
+  ggsave(filename = "../../products/graph_distime.png")
 
 
 
@@ -22,12 +27,16 @@ Graph_AdminTime <- AdminTime %>%
   drop_na(Count)%>%
   ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Admin)) +
   geom_area() +
-  ggtitle("Vaccine Administration over time")
+  labs(title = "Vaccine administration over time (Year 2021)", x = "Date", y = "Count", fill = "Vaccine Manufacturer") +
+  scale_fill_discrete(labels=c('Janssen', 'Moderna', 'Pfizer')) +
+  theme(plot.title = element_text(face = "bold"), legend.position = "bottom")
 Graph_AdminTime
 
+Graph_AdminTime %>%
+  ggsave(filename = "../../products/graph_admintime.png")
 
 
-## Southeast Region
+Graph_AdminTimescale_fill_discrete(labels=c('Janssen', 'Moderna', 'Pfizer'))## Southeast Region
 Graph_SEAdminBar <- RegionSoutheast %>%
   ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
   geom_bar(stat = 'identity') 

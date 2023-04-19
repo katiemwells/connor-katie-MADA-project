@@ -71,6 +71,7 @@ DisTime <- SubData %>%
   dplyr::select(`Date`, 5:8) %>%
   pivot_longer(!Date, names_to = "Vacc_Dist", values_to = "Count")
 
+
 Graph_DisTime <- DisTime %>%
   drop_na(Count)%>%
   ggplot(mapping = aes(x = Date, y = Count, fill = Vacc_Dist)) +

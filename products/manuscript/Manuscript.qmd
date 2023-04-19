@@ -20,31 +20,33 @@ library(tidyverse)
 library(tidymodels)
 ```
 
+# Summary/Abstract
+
+This article seeks to examine the popularity of different COVID-19 vaccine manufacturers in the year 2021 in the U.S. and to develop a model in understanding what potential factors are more associated with increase vaccine administration. Understanding the popularity differences across manufactures and the profiles of the different region within the U.S. could potentially explain differences in vaccine uptake. While vaccine distribution and administration information is updated every week, other potential drivers of increase vaccine administration across the country are not updated as frequently. For this reason, we limited our scope to 2021 so as to include data relating to these variables. After cleaning and joining the necessary datasets, several machine learning models were generated to ascertain the best comparative performance to explain the differences in vaccine administration. Given the complexity of the dataset and incompatibility of others containing region characteristics we were interested in, our findings were limited. However, modeling indicates that region, particularly in the West, is a major indicator of vaccine administration. More research and consistent data is needed to target the major factors of vaccine uptake. Furthermore, looking into the characteristics and behaviors of those living in the Western region of the U.S. states may lead to interventions to promote vaccine uptake which can reduce the transmission of COVID-19 and severity of disease. 
+
 # Introduction
 
 ## General Background Information
 
-A little over three years ago, the world was brought to its knees by a virus no one had heard of before. SARS-CoV-2, which causes the disease COVID-19, ravaged the world and caused millions of deaths [@cdc_cdc_nodate]. Scientists and researchers worked tirelessly during 2020 to develop vaccines to stop the spread and lessen the symptoms, and by the end of the year emergency use authorizations were given to administer the first immunizations.  
+A little over three years ago, the world was brought to its knees by a virus no one had heard of before. SARS-CoV-2, which causes the disease COVID-19, ravaged the world and caused millions of deaths [@cdc_cdc_nodate]. Scientists and researchers worked tirelessly during 2020 to develop vaccines to stop the spread and lessen the symptoms, and by the end of the year emergency use authorizations were given to administer the first immunizations.
 
-After the first vaccines were approved, a rollout began across the United States to distribute the new immunizations. In the beginning, priority was given to healthcare workers, long-term care facility residents, essential workers, those with high-risk conditions, and older adults. Distribution then began to other groups as supply warranted. Throughout 2021 and 2022, immunizations continued to be distributed to each state through health departments, pharmacies, doctor's offices, and many other settings [@dooling_advisory_2021]. Distribution did not always equal administration, however, and many factors may have affected whether or not someone received a vaccine. 
+After the first vaccines were approved, a rollout began across the United States to distribute the new immunizations. In the beginning, priority was given to healthcare workers, long-term care facility residents, essential workers, those with high-risk conditions, and older adults. Distribution then began to other groups as supply warranted. Throughout 2021 and 2022, immunizations continued to be distributed to each state through health departments, pharmacies, doctor's offices, and many other settings [@dooling_advisory_2021]. Distribution did not always equal administration, however, and many factors may have affected whether or not someone received a vaccine.
 
-Income is an integral predictor of health outcomes; previous studies have shown that there are large health differences between high and low income groups [@zimmerman_trends_2019]. Studies have also shown that low income is associated with low vaccine uptake [@kawai_racialethnic_2021]. Low income areas are likely to have less access to healthcare facilities, which may contribute to these numbers. 
+Income is an integral predictor of health outcomes; previous studies have shown that there are large health differences between high and low income groups [@zimmerman_trends_2019]. Studies have also shown that low income is associated with low vaccine uptake [@kawai_racialethnic_2021]. Low income areas are likely to have less access to healthcare facilities, which may contribute to these numbers.
 
-To investigate if any outside factors affected administration, we are going to compare region groups and median income data for each state to administration numbers and investigate their relationships. We expect to see states with lower median incomes (and therefore regions with lower median incomes) having lower administration numbers. 
+To investigate if any outside factors affected administration, we are going to compare region groups and median income data for each state to administration numbers and investigate their relationships. We expect to see states with lower median incomes (and therefore regions with lower median incomes) having lower administration numbers.
 
 ## Description of data and data source
 
 The main dataset contains US COVID-19 vaccine deliveries and administration data at national and jurisdiction level from all vaccine partners, including jurisdictional partner clinics, retail pharmacies, long-term care facilities, dialysis centers, Federal Emergency Management Agency and Health Resources and Services Administration partner sites, and federal entity facilities [@cdc_covid-19_nodate]. It has 109 columns and 37,500 rows of administration, distribution, and series data of COVID-19 vaccinations across the US.
 
-To use income data in our analysis, we uses US Census Bureau ACS Income date from 2021 [@us_census_bureau_american_2021]. This data was taken from the American Community Survey. 
+To use income data in our analysis, we uses US Census Bureau ACS Income date from 2021 [@us_census_bureau_american_2021]. This data was taken from the American Community Survey.
 
 ## Questions/Hypotheses to be addressed
 
 Question: What factors (like region or median income) influenced COVID-19 vaccines across the US? Hypotheses: H0 - There is no association between region or median income per state and COVID-19 vaccine administration in the United States. HA - There is an association between region or median income and COVID-19 vaccine administration in the United States.
 
-# Summary/Abstract
 
-*Write a summary of your project.*
 
 {{< pagebreak >}}
 
@@ -68,28 +70,28 @@ After placing each state in a region of the US, we will conduct a time series an
 
 Here are the main results from our exploratory analysis where we plotted the distributed and administered vaccines over the observed period. Individual bar graphs for each region can be found in the 'exploration.qmd' file in the 'processing_code' file.
 
-![](images/image-19820666.png)
+![](images/graph_distime-02.png){fig-align="center"}
 
-![](images/image-1680087526.png){width="623"}
+![](images/graph_admintime-02.png){fig-align="center"}
 
 ## Basic statistical analysis
 
 Here are the main results from our initial fitting analysis. Note: we may not keep all of these fits in our final project but we calculated them all to view the results. Further checking of the models can be found in the 'fitting.qmd' in the 'analysis_code' folder.
 
-```{r}
+```{r, echo=FALSE}
 resulttable1 <- readRDS(here("code", "analysis_code", "lm7.rds"))
 kable(resulttable1)
 ```
-```{r}
+
+```{r, echo=FALSE}
 resulttable2 <- readRDS(here("code", "analysis_code", "lm8.rds"))
 kable(resulttable2)
 ```
 
-```{r}
+```{r, echo=FALSE}
 resulttable3 <- readRDS(here("code", "analysis_code", "lm9.rds"))
 kable(resulttable3)
 ```
-
 
 {{< pagebreak >}}
 
@@ -97,15 +99,16 @@ kable(resulttable3)
 
 Comparing the best tree model to the null model fitted with the training dataset.
 
-```{r}
+```{r, echo=FALSE}
 resulttable4 <- readRDS(here("code", "analysis_code", "best_tree_df.rds"))
 kable(resulttable4)
 resulttable5 <- readRDS(here("code", "analysis_code", "null_train_df.rds"))
 kable(resulttable5)
 ```
-Comparing the last tree fit with the null model fitted with the testing data. 
 
-```{r}
+Comparing the last tree fit with the null model fitted with the testing data.
+
+```{r, echo=FALSE}
 resulttable6 <- readRDS(here("code", "analysis_code", "tree_last_df.rds"))
 kable(resulttable6)
 resulttable7 <- readRDS(here("code", "analysis_code", "null_test_df.rds"))
@@ -122,7 +125,7 @@ kable(resulttable7)
 
 ## Strengths and Limitations
 
-*Discuss what you perceive as strengths and limitations of your analysis.*
+We believe given the consistency and availability of COVID-19 vaccination across the U.S. there is great potential to drill down on the drivers of increase vaccination uptake and identify regions having great success and regions of concern. This study showed that the Western region of the U.S. is associated with increase COVID-19 vaccine administered in the year 2021. Further, from our machine learning modeling region appears to be a major indicator of vaccine administration despite including income by state. Our findings should spur more research looking at the characteristics of these regions to ascertain these drivers from a national viewpoint. Our research was limited by the context and formatting of datasets with other variable that characteristics these areas. Datasets were incompatible due to less frequent or sparse updates as well as insufficient information to reliably join or add to our existing dataset containing COVID-19 vaccine numbers. 
 
 ## Conclusions
 
