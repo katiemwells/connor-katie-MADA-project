@@ -129,7 +129,7 @@ We believe given the consistency and availability of COVID-19 vaccination across
 
 ## Conclusions
 
-*What are the main take-home messages?*
+Region, particularly living in the Western region of the U.S., is a significant predictor of overall COVID-19 vaccine administration for the year 2021. While variables that could drive these numbers or speak to the behaviors and resources of these regions are not available in the vaccine administration dataset that is published weekly, there are other datasets available that can be cleaned, aggregated, and joined to study potential drivers. However, datasets with these variables are not updated as regularly and many are formatted in such a way that makes it difficult to join with our primary vaccine dataset for study. More research and resources should be devoted to cultivating data that can be analyzed to determine which regions in the U.S. was better vaccine uptake and what are the drivers of vaccine uptake or hesitancy from a national perspective. 
 
 *Include citations in your Rmd file using bibtex, the list of references will automatically be placed at the end*
 
