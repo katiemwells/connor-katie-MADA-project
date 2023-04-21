@@ -126,6 +126,7 @@ kable(resulttable7)
 
 ## Summary and Interpretation
 
+The CDC privide weekly updates on COVID-19 vaccine distribution and administration in every state in the US. Using this data as our primary dataset, we plotted vaccine distribution and administration by time and grouped by vaccine manufacturer. We also grouped the data by region using state level data in the US, which, proved to be a significant predictor in vaccine administration numbers. To understand what other possible factors that could explain vaccine administration rates, we searched for data that we could join into our main dataset for analysis. Up-to-date, publicly available research that was compatible with our main dataset was extremely sparse. We were only able to find income data by state for the year 2021. After trimming our main dataset to include vaccine information only for the year 2021, we joined it with data that included income. Despite it's inclusion, machine learning model outcomes suggested that US region was the strongly determinate of overall vaccine administration for the year 2021. This suggest some difference in behavior or sociological factor making persons in the Western US more likely to receive the COVID-19 vaccine. 
 *Summarize what you did, what you found and what it means.*
 
 ## Strengths and Limitations
