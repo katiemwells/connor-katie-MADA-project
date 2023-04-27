@@ -1,0 +1,174 @@
+---
+title: Project Review Template 
+author: RAQUEL FRANCISCO
+date: "`r file.mtime(knitr::current_input())`"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+# Overview
+
+Title of project: Manuscript for a Data Analysis Project
+
+Name of project author(s): Katie Wells & Connor Ross
+
+Name of project reviewer: Raquel Francisco
+
+# Specific project content evaluation
+
+## Background, Context and Motivation
+
+### Feedback and Comments
+
+Very interesting topic. Strong introduction and justification. Simple
+and elegant use of ML. Justified use of historic SARS-CoV-2 data to
+explore vaccination and socioeconomic status.
+
+Error codes: No errors seen.
+
+### Summary assessment
+
+-   strong contextualization and motivation
+
+## Question description
+
+### Feedback and Comments
+
+The socioeconomic hypothesis is never explored. Please go down to
+conclusion/discussion section for more information.
+
+### Summary assessment
+
+-   question/hypotheses fully clear
+
+## Data description
+
+### Feedback and Comments
+
+Reproducable! Data source provided and easily accessed. Data cleaning
+was simple and logical. Data visualization was great.
+
+### Summary assessment
+
+-   source and overall structure of data well explained
+
+## Data wrangling and exploratory analysis
+
+### Feedback and Comments
+
+Error codes: Exploration.qmd = Error in
+Graph_AdminTimescale_fill_discrete(labels = c("Janssen", "Moderna", :
+could not find function "Graph_AdminTimescale_fill_discrete"
+
+I believe the package is not listed in the script I don't know how
+important it is to the analysis. Your graph still populated.
+
+### Summary assessment
+
+-   essentially no weaknesses in wrangling and exploratory component
+
+## Appropriateness of Analysis
+
+### Feedback and Comments
+
+Fitting.qmd = check_model(lm1\$fit) Not enough model terms in the
+conditional part of the model to check for multicollinearity.
+
+Theres some easy code you can drop in there to make sure your variables
+aren't highly correlated. I believe spearmans corr test would work.
+
+### Summary assessment
+
+-   strong and reasonable analysis
+
+## Presentation
+
+### Feedback and Comments
+
+Manuscipt.qmd =
+
+I think adding a graph from the raw data explore file would be nice (but
+not necessary). Provide misspelled in 129 Remove line 130.
+
+### Summary assessment
+
+-   results are very well presented
+
+## Discussion/Conclusions
+
+### Feedback and Comments
+
+As mentioned earlier, the conclusion does not address your socioeconomic
+hypothesis. Either remove it from the Intro/Ho or add a quick blurb to
+your discussion with those results. Remember you can also always bring
+that up as a future direction in your discussion if you just ran out of
+time and didn't get around to it.
+
+### Summary assessment
+
+-   minor parts wrong, missing or unclear
+
+## Further comments
+
+I think this was a well explored dataset with interesting results.
+Wonderful team effort.
+
+# Overall project content evaluation
+
+## Structure
+
+### Feedback and Comments
+
+Readme files were excellent! Very easy to follow and allowed me to run
+the majority of your code with little to no problems at all. It really
+made everything look very intentional.
+
+### Summary assessment
+
+-   well structured
+
+## Documentation
+
+### Feedback and Comments
+
+The code was clear and straightforward. The only issues I had were the
+error messages listed above which only include minor revisions.
+
+### Summary assessment
+
+-   fully and well documented
+
+## Reproducibility
+
+### Feedback and Comments
+
+Very minor error messages came up when reproducing code (found above).
+That didn't overtly hinder the ability to complete the qmd. Those
+particular lines of code were just skipped.
+
+### Summary assessment
+
+-   fully reproducible without issues
+
+## Thoroughness
+
+### Feedback and Comments
+
+View comments for discussion. I suggest the additional hypothesis is
+removed or at least explored.
+
+### Summary assessment
+
+-   strong level of thorougness
+
+## Further comments
+
+I believe this project was well done and implemented many of the
+strategies review in the course. I believe it should receive full marks
+(3/3).
