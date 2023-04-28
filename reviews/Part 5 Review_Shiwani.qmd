@@ -1,0 +1,143 @@
+---
+title: Project 5 Review
+author: SHIWANI SAPKOTA
+date: "`r file.mtime(knitr::current_input())`"
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+---
+
+
+# Overview
+Title of project: COVID19 Vaccine Popularity across the US
+
+Name of project author(s): Connor Ross & Katie Wells
+
+Name of project reviewer: Shiwani Sapkota
+
+# Specific project content evaluation
+
+## Background, Context and Motivation
+
+### Feedback and Comments
+
+I could not find the project title in manuscript so I have added the project title above on my own. The background is well written and comprehensive. The context/scenario of COVID 19 has been well formulated. 
+
+### Summary assessment 
+
+* strong contextualization and motivation
+
+## Question description
+
+### Feedback and Comments
+
+Research question and hypothesis is clearly stated and described. It is clear from the hypothesis about how the questions relate to the data.
+
+### Summary assessment
+
+* question/hypotheses fully clear
+
+## Data description
+
+### Feedback and Comments
+
+The data is described well. There could still be more information included about the data source.   
+
+### Summary assessment
+
+* source and overall structure of data somewhat explained
+
+## Data wrangling and exploratory analysis
+
+### Feedback and Comments
+
+The data wrangling and exploratory analysis was done well. One suggestion could be creating a chunk of code for loading packages in each .qmd files. For example, while I tried running exploration.qmd file, I had an error saying I have no package installed for running a particular function used in that file. So in that case, it's better if we could list all the required packages at the top of the file that are needed to run each of the particular files.
+
+### Summary assessment
+* essentially no weaknesses in wrangling and exploratory component
+
+## Appropriateness of Analysis
+
+### Feedback and Comments
+
+Analysis section was easy to follow and appropriate. But I wish there were a little bit more detailed comments on code files. More ML model analysis parts could be added as well. 
+
+### Summary assessment
+
+* strong and reasonable analysis
+
+## Presentation
+
+### Feedback and Comments
+
+The results are presented well with some rooms for improvements in Tables. I know its hard trying to fit the table but you could play around with codes a little bit to fit the full analysis table in a doc file. Figures 1 and 2 look good but maybe you could log scale Y-axis. It will also be better to label the figures and tables as Table 1 and Figure 1 and so on.
+
+### Summary assessment
+
+* results are presented ok, with room for improvement
+
+## Discussion/Conclusions
+
+### Feedback and Comments
+
+Summary is clear and concise. Have done a great job linking the study results. Strengths and limitations have been discussed well.
+
+### Summary assessment
+
+* strong, complete and clear discussion
+
+## Further comments
+
+Overall, the research question is of contemporary type, and the study result turned out really interesting. Good job with well formulated hypothesis and following the analysis accordingly.
+
+# Overall project content evaluation
+
+## Structure
+
+### Feedback and Comments
+
+Everything is structured well and was easy to follow along. It might not be necessary but I would suggest adding a readme file in each project folders so that we don't always need to go the main readme file to find out what those folders are for.
+
+### Summary assessment
+
+* well structured
+
+## Documentation 
+
+### Feedback and Comments
+
+The documentation is thorough but I would suggest adding readme files as mentioned earliers in each project folders.
+
+### Summary assessment
+
+* fully and well documented
+
+## Reproducibility
+
+### Feedback and Comments
+
+As mentioned earlier, the packages were not listed for each files so I had trouble running code files as I had to manually look for packages. So, I would suggest adding list of packages in each files.
+
+### Summary assessment
+
+* small parts not reproducible or required manual intervention 
+
+## Thoroughness
+
+### Feedback and Comments
+
+The study was thorough and easy to follow. But there are still some rooms for additions for list of packages and more ML model additions part.
+
+### Summary assessment
+
+* decent level of thoroughness
+
+## Further comments
+
+Not major issues. But could add a project title, readme files for each folders, more ML models, change the table layout, and include list of packages. I really enjoyed reviewing this project. Overall, great job guys!!!
+
+
+
+
