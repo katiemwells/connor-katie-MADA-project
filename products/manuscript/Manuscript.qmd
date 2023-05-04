@@ -1,5 +1,5 @@
 ---
-title: "Manuscript for a Data Analysis Project"
+title: "Potential Drivers of COVID-19 Vaccine Administration Differences in the US"
 subtitle: ""
 author: Katie Wells & Connor Ross
 date: "`r Sys.Date()`"
@@ -63,7 +63,7 @@ To explore the data, we created two main figures using the ‘ggplot2’ package
 ## Statistical analyses
 
 For our initial analyses, we fit simple linear models using overall administered vaccines as the outcome and region as the predictor. More fits can be found in the ‘fitting.qmd’ file. 
-To determine what the best predictor of vaccine administration in our dataset was, we used a tree-based machine learning model. Our code was modeled after the ‘tidymodels’ package framework; it used cross-validation and split the cleaned data into training and testing sets for comparison. We also created a null model to compare our final model to to evaluate its performance. The exact steps can be found in the ‘analysis.qmd’ file. 
+To determine what the best predictor of vaccine administration in our dataset was, we used a tree-based machine learning model. The tree-base machine learning model was chosen in order to simplify our complex dataset to a simple, interpretable model. Our code was modeled after the ‘tidymodels’ package framework; it used cross-validation and split the cleaned data into training and testing sets for comparison. We also created a null model to compare our final model to to evaluate its performance. The exact steps can be found in the ‘analysis.qmd’ file. 
 
 
 
@@ -85,17 +85,20 @@ Here are the main results from our initial fitting analysis. Note: we may not ke
 
 ```{r, echo=FALSE}
 resulttable1 <- readRDS(here("code", "analysis_code", "lm7.rds"))
-kable(resulttable1)
+kable(resulttable1,
+      caption = "Table 1: Final Linear Model option 1")
 ```
 
 ```{r, echo=FALSE}
 resulttable2 <- readRDS(here("code", "analysis_code", "lm8.rds"))
-kable(resulttable2)
+kable(resulttable2,
+      caption = "Table 2: Final Linear Model option 2")
 ```
 
 ```{r, echo=FALSE}
 resulttable3 <- readRDS(here("code", "analysis_code", "lm9.rds"))
-kable(resulttable3)
+kable(resulttable3,
+      caption = "Table 3: Machine Learning Decision Tree Final Model")
 ```
 
 {{< pagebreak >}}
@@ -126,8 +129,8 @@ kable(resulttable7)
 
 ## Summary and Interpretation
 
-The CDC privide weekly updates on COVID-19 vaccine distribution and administration in every state in the US. Using this data as our primary dataset, we plotted vaccine distribution and administration by time and grouped by vaccine manufacturer. We also grouped the data by region using state level data in the US, which, proved to be a significant predictor in vaccine administration numbers. To understand what other possible factors that could explain vaccine administration rates, we searched for data that we could join into our main dataset for analysis. Up-to-date, publicly available research that was compatible with our main dataset was extremely sparse. We were only able to find income data by state for the year 2021. After trimming our main dataset to include vaccine information only for the year 2021, we joined it with data that included income. Despite it's inclusion, machine learning model outcomes suggested that US region was the strongly determinate of overall vaccine administration for the year 2021. This suggest some difference in behavior or sociological factor making persons in the Western US more likely to receive the COVID-19 vaccine. 
-*Summarize what you did, what you found and what it means.*
+The CDC provide weekly updates on COVID-19 vaccine distribution and administration in every state in the US. Using this data as our primary dataset, we plotted vaccine distribution and administration by time and grouped by vaccine manufacturer. We also grouped the data by region using state level data in the US, which, proved to be a significant predictor in vaccine administration numbers. To understand what other possible factors that could explain vaccine administration rates, we searched for data that we could join into our main dataset for analysis. Up-to-date, publicly available research that was compatible with our main dataset was extremely sparse. We were only able to find income data by state for the year 2021. After trimming our main dataset to include vaccine information only for the year 2021, we joined it with data that included income. Despite it's inclusion, machine learning model outcomes suggested that US region was the strongly determinate of overall vaccine administration for the year 2021. This suggest some difference in behavior or sociological factor making persons in the Western US more likely to receive the COVID-19 vaccine. 
+
 
 ## Strengths and Limitations
 
@@ -135,7 +138,7 @@ We believe given the consistency and availability of COVID-19 vaccination across
 
 ## Conclusions
 
-Region, particularly living in the Western region of the U.S., is a significant predictor of overall COVID-19 vaccine administration for the year 2021. While variables that could drive these numbers or speak to the behaviors and resources of these regions are not available in the vaccine administration dataset that is published weekly, there are other datasets available that can be cleaned, aggregated, and joined to study potential drivers. However, datasets with these variables are not updated as regularly and many are formatted in such a way that makes it difficult to join with our primary vaccine dataset for study. More research and resources should be devoted to cultivating data that can be analyzed to determine which regions in the U.S. was better vaccine uptake and what are the drivers of vaccine uptake or hesitancy from a national perspective. 
+Region, particularly living in the Western region of the U.S., is a significant predictor of overall COVID-19 vaccine administration for the year 2021. While variables that could drive these numbers or speak to the behaviors and resources of these regions are not available in the vaccine administration dataset that is published weekly, there are other datasets available that can be cleaned, aggregated, and joined to study potential drivers. However, datasets with these variables are not updated as regularly and many are formatted in such a way that makes it difficult to join with our primary vaccine dataset for study. More research and resources should be devoted to cultivating data that can be analyzed to determine which regions in the U.S. was better vaccine uptake and what are the drivers of vaccine uptake or hesitancy from a national perspective. Specifically, more data on geographic and socioeconomic factors could prove useful in assessing differences in vaccine administration.
 
 
 

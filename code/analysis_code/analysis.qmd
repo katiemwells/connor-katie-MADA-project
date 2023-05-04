@@ -199,8 +199,10 @@ null_train_fit %>%
 tree_last_fit <- final_tree_workflow %>%
   last_fit(split)
 
-tree_last_fit %>%
+Testtable <- tree_last_fit %>%
   collect_metrics()
+Testtable
+
 
 null_test_fit %>%
   collect_metrics()

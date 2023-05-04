@@ -12,8 +12,7 @@ editor_options:
 
 **Semester:** Spring 2023
 
-**Title:** *Manuscript for a Data Analysis Project (COVID-19 Vaccine
-Popularity by Region in the US)*
+**Title:** *Potential Drivers of COVID-19 Vaccine Administration Differences in the US*
 
 **Manuscript:** Manuscript.docx (Manuscript.docx -> products ->
 connor-katie-MADA-project)
@@ -35,8 +34,11 @@ connor-katie-MADA-project)
 
     3.  fitting.qmd (fitting.qmd -> analysis_code -> code ->
         connor-katie-MADA-project)
+        
+    4.  analysis.qmd (analysis.qmd -> analysis_code -> code -> 
+        connor-katie-MADA-project)
 
-    4.  Manuscript.qmd (Manuscript.qmd -> manuscript -> products ->
+    5.  Manuscript.qmd (Manuscript.qmd -> manuscript -> products ->
         connor-katie-MADA-project)
 
 ## Data/Data Files Information:

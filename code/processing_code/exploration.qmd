@@ -5,6 +5,15 @@ format:
     theme: darkly
 ---
 
+```{r}
+# Load packages
+library(tidyverse)
+library(readr)
+library(here)
+library(knitr)
+library(lubridate)
+```
+
 ## Exploring the data
 ```{r}
 ## Vaccine Distribution Overtime by Manufac. US Wide
@@ -36,7 +45,7 @@ Graph_AdminTime %>%
   ggsave(filename = "../../products/graph_admintime.png")
 
 
-Graph_AdminTimescale_fill_discrete(labels=c('Janssen', 'Moderna', 'Pfizer'))## Southeast Region
+Graph_AdminTime <- scale_fill_discrete(labels=c('Janssen', 'Moderna', 'Pfizer'))## Southeast Region
 Graph_SEAdminBar <- RegionSoutheast %>%
   ggplot(mapping = aes(x = reorder(Vacc_man, -Count), y = Count, fill = Vacc_man)) +
   geom_bar(stat = 'identity') 
